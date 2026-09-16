@@ -11,8 +11,6 @@
             --cloud-white: #FFFFFF;
             --target-night: linear-gradient(135deg, #4A4083 0%, #292452 100%);
             --star-gold: #FFD166;
-            --success-green: #06D6A0;
-            --fail-red: #EF476F;
             --card-shadow: 0 8px 20px rgba(80, 70, 100, 0.12);
         }
 
@@ -145,12 +143,7 @@
 
         .day-cell.empty {
             visibility: hidden;
-        }
-
-        .day-cell.out-of-range {
-            opacity: 0.3;
             cursor: default;
-            background: #F1F5F9;
         }
 
         .day-cell.target-night {
@@ -200,7 +193,7 @@
         <h1>🏆 Mon Calendrier de Grand 🏆</h1>
         <div class="subtitle">En route vers l'objectif sans tétine ! 🚀</div>
         <div class="legend">
-            <div class="legend-item">🎯 Soirée spéciale</div>
+            <div class="legend-item">🌙 Soirée spéciale</div>
             <div class="legend-item">🟢 Réussi !</div>
             <div class="legend-item">🔴 Pas réussi</div>
         </div>
@@ -209,6 +202,7 @@
     <div class="calendar-container" id="calendar"></div>
 
     <script>
+        // Dates cibles format YYYY-MM-DD
         const targetDatesList = [
             // Septembre
             "2026-09-16", "2026-09-23", "2026-09-24", "2026-09-30",
@@ -223,8 +217,6 @@
         ];
 
         const TARGET_DATES = new Set(targetDatesList);
-        const START_DATE = new Date("2026-09-16T00:00:00");
-        const END_DATE = new Date("2026-11-23T23:59:59");
 
         let savedData = JSON.parse(localStorage.getItem('tetine_tracker')) || {};
 
@@ -235,9 +227,9 @@
         function createCalendar() {
             const container = document.getElementById('calendar');
             const months = [
-                { year: 2026, month: 8, name: "Septembre 2026 🌙" },
-                { year: 2026, month: 9, name: "Octobre 2026 ⭐" },
-                { year: 2026, month: 10, name: "Novembre 2026 🚀" }
+                { year: 2026, month: 8, name: "Septembre 2026 🌙" },  // 8 = Septembre dans l'API Date (0-indexed)
+                { year: 2026, month: 9, name: "Octobre 2026 ⭐" },    // 9 = Octobre
+                { year: 2026, month: 10, name: "Novembre 2026 🚀" }   // 10 = Novembre
             ];
 
             const weekDays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -276,19 +268,18 @@
                 }
 
                 for (let day = 1; day <= lastDay.getDate(); day++) {
-                    const currentDate = new Date(m.year, m.month, day, 12, 0, 0);
-                    const dateStr = `${m.year}-${String(m.month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    // Formatage strict YYYY-MM-DD avec zéro initial obligatoire
+                    const monthStr = String(m.month + 1).padStart(2, '0');
+                    const dayStr = String(day).padStart(2, '0');
+                    const dateStr = `${m.year}-${monthStr}-${dayStr}`;
 
                     const cell = document.createElement('div');
                     cell.className = 'day-cell';
 
-                    const inRange = currentDate >= START_DATE && currentDate <= END_DATE;
                     const isTarget = TARGET_DATES.has(dateStr);
 
                     if (isTarget) {
                         cell.classList.add('target-night');
-                    } else if (!inRange) {
-                        cell.classList.add('out-of-range');
                     }
 
                     const num = document.createElement('div');
@@ -300,7 +291,7 @@
                     statusDiv.className = 'day-status';
 
                     const currentStatus = savedData[dateStr] || 'none';
-                    updateStatusDisplay(statusDiv, currentStatus, isTarget, inRange);
+                    updateStatusDisplay(statusDiv, currentStatus, isTarget);
                     cell.appendChild(statusDiv);
 
                     if (isTarget && currentStatus === 'none') {
@@ -310,6 +301,7 @@
                         cell.appendChild(badge);
                     }
 
+                    // Clic actif sur TOUS les jours du calendrier
                     cell.addEventListener('click', () => {
                         let nextStatus = 'success';
                         if (savedData[dateStr] === 'success') nextStatus = 'fail';
@@ -321,7 +313,7 @@
                         statusDiv.classList.add('pop');
                         setTimeout(() => statusDiv.classList.remove('pop'), 300);
 
-                        updateStatusDisplay(statusDiv, nextStatus, isTarget, inRange);
+                        updateStatusDisplay(statusDiv, nextStatus, isTarget);
                         
                         const oldBadge = cell.querySelector('.badge-target');
                         if (oldBadge) oldBadge.remove();
@@ -341,7 +333,7 @@
             });
         }
 
-        function updateStatusDisplay(element, status, isTarget, inRange) {
+        function updateStatusDisplay(element, status, isTarget) {
             if (status === 'success') {
                 element.innerText = '🟢';
             } else if (status === 'fail') {
