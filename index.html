@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Calendrier Grand Garçon 🏆</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-sky: linear-gradient(180deg, #EAE5FF 0%, #FFF3E4 60%, #E2F0D9 100%);
+            --cloud-white: #FFFFFF;
+            --target-night: linear-gradient(135deg, #4A4083 0%, #292452 100%);
+            --star-gold: #FFD166;
+            --success-green: #06D6A0;
+            --fail-red: #EF476F;
+            --card-shadow: 0 8px 20px rgba(80, 70, 100, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px 10px;
+            background: var(--bg-sky);
+            min-height: 100vh;
+            color: #332C54;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(5px);
+            margin-bottom: 25px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.2rem;
+            color: #4A4083;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #6C5CE7;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            font-weight: 700;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFF;
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .calendar-container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .month-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 4px solid #FFF;
+        }
+
+        .month-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #FF7675;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px #FFF;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+            font-weight: 700;
+            color: #8C7AE6;
+            margin-bottom: 10px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            background: var(--cloud-white);
+            border-radius: 20px;
+            border: 3px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        .day-cell:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .day-cell.empty {
+            visibility: hidden;
+        }
+
+        .day-cell.out-of-range {
+            opacity: 0.3;
+            cursor: default;
+            background: #F1F5F9;
+        }
+
+        .day-cell.target-night {
+            background: var(--target-night);
+            color: #FFF;
+            border-color: #786FA6;
+        }
+
+        .day-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            align-self: flex-start;
+        }
+
+        .day-status {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .badge-target {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: #FFD166;
+            color: #2D3436;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 2px;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .pop {
+            animation: pop 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏆 Mon Calendrier de Grand 🏆</h1>
+        <div class="subtitle">En route vers l'objectif sans tétine ! 🚀</div>
+        <div class="legend">
+            <div class="legend-item">🎯 Soirée spéciale</div>
+            <div class="legend-item">🟢 Réussi !</div>
+            <div class="legend-item">🔴 Pas réussi</div>
+        </div>
+    </header>
+
+    <div class="calendar-container" id="calendar"></div>
+
+    <script>
+        const targetDatesList = [
+            // Septembre
+            "2026-09-16", "2026-09-23", "2026-09-24", "2026-09-30",
+            // Octobre
+            "2026-10-01", "2026-10-03", "2026-10-07", "2026-10-08", "2026-10-10",
+            "2026-10-12", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17",
+            "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23",
+            "2026-10-24", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29",
+            "2026-10-30", "2026-10-31",
+            // Novembre
+            "2026-11-01", "2026-11-02"
+        ];
+
+        const TARGET_DATES = new Set(targetDatesList);
+        const START_DATE = new Date("2026-09-16");
+        const END_DATE = new Date("2026-11-23");
+
+        let savedData = JSON.parse(localStorage.getItem('tetine_tracker')) || {};
+
+        function saveData() {
+            localStorage.setItem('tetine_tracker', JSON.stringify(savedData));
+        }
+
+        function createCalendar() {
+            const container = document.getElementById('calendar');
+            const months = [
+                { year: 2026, month: 8, name: "Septembre 2026 🌙" },
+                { year: 2026, month: 9, name: "Octobre 2026 ⭐" },
+                { year: 2026, month: 10, name: "Novembre 2026 🚀" }
+            ];
+
+            const weekDays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+            months.forEach(m => {
+                const monthCard = document.createElement('div');
+                monthCard.className = 'month-card';
+
+                const title = document.createElement('div');
+                title.className = 'month-title';
+                title.innerText = m.name;
+                monthCard.appendChild(title);
+
+                const weekHeader = document.createElement('div');
+                weekHeader.className = 'weekdays';
+                weekDays.forEach(day => {
+                    const d = document.createElement('div');
+                    d.innerText = day;
+                    weekHeader.appendChild(d);
+                });
+                monthCard.appendChild(weekHeader);
+
+                const daysGrid = document.createElement('div');
+                daysGrid.className = 'days-grid';
+
+                const firstDay = new Date(m.year, m.month, 1);
+                const lastDay = new Date(m.year, m.month + 1, 0);
+
+                let startingDay = firstDay.getDay() - 1;
+                if (startingDay === -1) startingDay = 6;
+
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell empty';
+                    daysGrid.appendChild(emptyCell);
+                }
+
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const currentDate = new Date(m.year, m.month, day);
+                    const dateStr = `${m.year}-${String(m.month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+
+                    const inRange = currentDate >= START_DATE && currentDate <= END_DATE;
+                    const isTarget = TARGET_DATES.has(dateStr);
+
+                    if (isTarget && inRange) {
+                        cell.classList.add('target-night');
+                    } else if (!inRange) {
+                        cell.classList.add('out-of-range');
+                    }
+
+                    const num = document.createElement('div');
+                    num.className = 'day-num';
+                    num.innerText = day;
+                    cell.appendChild(num);
+
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'day-status';
+
+                    const currentStatus = savedData[dateStr] || 'none';
+                    updateStatusDisplay(statusDiv, currentStatus, isTarget, inRange);
+                    cell.appendChild(statusDiv);
+
+                    if (isTarget && inRange && currentStatus === 'none') {
+                        const badge = document.createElement('div');
+                        badge.className = 'badge-target';
+                        badge.innerText = '🚀 Soirée';
+                        cell.appendChild(badge);
+                    }
+
+                    if (inRange) {
+                        cell.addEventListener('click', () => {
+                            let nextStatus = 'success';
+                            if (savedData[dateStr] === 'success') nextStatus = 'fail';
+                            else if (savedData[dateStr] === 'fail') nextStatus = 'none';
+
+                            savedData[dateStr] = nextStatus;
+                            saveData();
+
+                            statusDiv.classList.add('pop');
+                            setTimeout(() => statusDiv.classList.remove('pop'), 300);
+
+                            updateStatusDisplay(statusDiv, nextStatus, isTarget, inRange);
+                            
+                            const oldBadge = cell.querySelector('.badge-target');
+                            if (oldBadge) oldBadge.remove();
+                            if (isTarget && nextStatus === 'none') {
+                                const badge = document.createElement('div');
+                                badge.className = 'badge-target';
+                                badge.innerText = '🚀 Soirée';
+                                cell.appendChild(badge);
+                            }
+                        });
+                    }
+
+                    daysGrid.appendChild(cell);
+                }
+
+                monthCard.appendChild(daysGrid);
+                container.appendChild(monthCard);
+            });
+        }
+
+        function updateStatusDisplay(element, status, isTarget, inRange) {
+            if (status === 'success') {
+                element.innerText = '🟢';
+            } else if (status === 'fail') {
+                element.innerText = '🔴';
+            } else if (isTarget && inRange) {
+                element.innerText = '🌙';
+            } else {
+                element.innerText = '☁️';
+            }
+        }
+
+        createCalendar();
+    </script>
+</body>
+</html>
