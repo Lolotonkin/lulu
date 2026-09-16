@@ -24,7 +24,7 @@
 
         body {
             margin: 0;
-            padding: 8px 4px;
+            padding: 6px 2px;
             background: var(--bg-sky);
             min-height: 100vh;
             color: #332C54;
@@ -37,22 +37,22 @@
         header {
             text-align: center;
             background: rgba(255, 255, 255, 0.92);
-            padding: 10px 6px;
-            border-radius: 16px;
+            padding: 8px 4px;
+            border-radius: 14px;
             box-shadow: var(--card-shadow);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             width: 100%;
         }
 
         h1 {
             font-family: 'Fredoka One', cursive;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #4A4083;
-            margin: 0 0 4px 0;
+            margin: 0 0 2px 0;
         }
 
         .subtitle {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #6C5CE7;
         }
@@ -60,68 +60,73 @@
         .legend {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            margin-top: 6px;
-            font-size: 0.7rem;
+            gap: 3px;
+            margin-top: 5px;
+            font-size: 0.65rem;
             font-weight: 700;
         }
 
         .legend-item {
             background: #FFF;
-            padding: 3px 6px;
-            border-radius: 10px;
+            padding: 2px 5px;
+            border-radius: 8px;
         }
 
         .calendar-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .month-card {
             background: rgba(255, 255, 255, 0.85);
-            border-radius: 16px;
-            padding: 8px 3px;
+            border-radius: 14px;
+            padding: 6px 2px;
             box-shadow: var(--card-shadow);
             width: 100%;
         }
 
         .month-title {
             font-family: 'Fredoka One', cursive;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: center;
             color: #FF7675;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            display: flex;
+            width: 100%;
             text-align: center;
             font-weight: 700;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #8C7AE6;
             margin-bottom: 4px;
         }
 
+        .weekdays div {
+            width: calc(100% / 7);
+        }
+
         .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
+            display: flex;
+            flex-wrap: wrap;
             width: 100%;
         }
 
         .day-cell {
-            min-height: 52px;
+            width: calc(100% / 7 - 2px);
+            margin: 1px;
+            height: 48px;
             background: var(--cloud-white);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #E2E8F0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 2px 1px;
+            padding: 1px;
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -157,14 +162,14 @@
 
         .day-num {
             font-family: 'Fredoka One', cursive;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             align-self: flex-start;
-            margin-left: 2px;
+            margin-left: 1px;
             line-height: 1;
         }
 
         .day-status {
-            font-size: 1.1rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -173,14 +178,13 @@
         }
 
         .badge-target {
-            font-size: 0.45rem;
+            font-size: 0.4rem;
             font-weight: 700;
             background: #FFD166;
             color: #2D3436;
-            padding: 1px 2px;
-            border-radius: 4px;
+            padding: 0px 1px;
+            border-radius: 3px;
             white-space: nowrap;
-            margin-bottom: 1px;
         }
 
         @keyframes pop {
