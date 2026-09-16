@@ -223,8 +223,8 @@
         ];
 
         const TARGET_DATES = new Set(targetDatesList);
-        const START_DATE = new Date("2026-09-16");
-        const END_DATE = new Date("2026-11-23");
+        const START_DATE = new Date("2026-09-16T00:00:00");
+        const END_DATE = new Date("2026-11-23T23:59:59");
 
         let savedData = JSON.parse(localStorage.getItem('tetine_tracker')) || {};
 
@@ -276,7 +276,7 @@
                 }
 
                 for (let day = 1; day <= lastDay.getDate(); day++) {
-                    const currentDate = new Date(m.year, m.month, day);
+                    const currentDate = new Date(m.year, m.month, day, 12, 0, 0);
                     const dateStr = `${m.year}-${String(m.month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
                     const cell = document.createElement('div');
@@ -285,7 +285,7 @@
                     const inRange = currentDate >= START_DATE && currentDate <= END_DATE;
                     const isTarget = TARGET_DATES.has(dateStr);
 
-                    if (isTarget && inRange) {
+                    if (isTarget) {
                         cell.classList.add('target-night');
                     } else if (!inRange) {
                         cell.classList.add('out-of-range');
@@ -303,37 +303,35 @@
                     updateStatusDisplay(statusDiv, currentStatus, isTarget, inRange);
                     cell.appendChild(statusDiv);
 
-                    if (isTarget && inRange && currentStatus === 'none') {
+                    if (isTarget && currentStatus === 'none') {
                         const badge = document.createElement('div');
                         badge.className = 'badge-target';
                         badge.innerText = '🚀 Soirée';
                         cell.appendChild(badge);
                     }
 
-                    if (inRange) {
-                        cell.addEventListener('click', () => {
-                            let nextStatus = 'success';
-                            if (savedData[dateStr] === 'success') nextStatus = 'fail';
-                            else if (savedData[dateStr] === 'fail') nextStatus = 'none';
+                    cell.addEventListener('click', () => {
+                        let nextStatus = 'success';
+                        if (savedData[dateStr] === 'success') nextStatus = 'fail';
+                        else if (savedData[dateStr] === 'fail') nextStatus = 'none';
 
-                            savedData[dateStr] = nextStatus;
-                            saveData();
+                        savedData[dateStr] = nextStatus;
+                        saveData();
 
-                            statusDiv.classList.add('pop');
-                            setTimeout(() => statusDiv.classList.remove('pop'), 300);
+                        statusDiv.classList.add('pop');
+                        setTimeout(() => statusDiv.classList.remove('pop'), 300);
 
-                            updateStatusDisplay(statusDiv, nextStatus, isTarget, inRange);
-                            
-                            const oldBadge = cell.querySelector('.badge-target');
-                            if (oldBadge) oldBadge.remove();
-                            if (isTarget && nextStatus === 'none') {
-                                const badge = document.createElement('div');
-                                badge.className = 'badge-target';
-                                badge.innerText = '🚀 Soirée';
-                                cell.appendChild(badge);
-                            }
-                        });
-                    }
+                        updateStatusDisplay(statusDiv, nextStatus, isTarget, inRange);
+                        
+                        const oldBadge = cell.querySelector('.badge-target');
+                        if (oldBadge) oldBadge.remove();
+                        if (isTarget && nextStatus === 'none') {
+                            const badge = document.createElement('div');
+                            badge.className = 'badge-target';
+                            badge.innerText = '🚀 Soirée';
+                            cell.appendChild(badge);
+                        }
+                    });
 
                     daysGrid.appendChild(cell);
                 }
@@ -348,7 +346,7 @@
                 element.innerText = '🟢';
             } else if (status === 'fail') {
                 element.innerText = '🔴';
-            } else if (isTarget && inRange) {
+            } else if (isTarget) {
                 element.innerText = '🌙';
             } else {
                 element.innerText = '☁️';
