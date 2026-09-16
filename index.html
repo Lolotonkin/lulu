@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mon Calendrier Grand Garçon 🏆</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,18 +12,19 @@
             --target-night: linear-gradient(135deg, #4A4083 0%, #292452 100%);
             --success-bg: linear-gradient(135deg, #A8E6CF 0%, #56AB2F 100%);
             --fail-bg: #E2E8F0;
-            --card-shadow: 0 8px 20px rgba(80, 70, 100, 0.12);
+            --card-shadow: 0 4px 15px rgba(80, 70, 100, 0.1);
         }
 
         * {
             box-sizing: border-box;
             font-family: 'Quicksand', sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             margin: 0;
-            padding: 20px 10px;
+            padding: 10px 6px;
             background: var(--bg-sky);
             min-height: 100vh;
             color: #332C54;
@@ -34,29 +35,29 @@
 
         header {
             text-align: center;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px 30px;
-            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 12px 10px;
+            border-radius: 20px;
             box-shadow: var(--card-shadow);
             backdrop-filter: blur(5px);
-            margin-bottom: 25px;
-            max-width: 800px;
+            margin-bottom: 15px;
             width: 100%;
+            max-width: 600px;
         }
 
         h1 {
             font-family: 'Fredoka One', cursive;
-            font-size: 2.2rem;
+            font-size: 1.4rem;
             color: #4A4083;
-            margin: 0 0 10px 0;
+            margin: 0 0 4px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 6px;
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #6C5CE7;
         }
@@ -64,8 +65,9 @@
         .legend {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 0.75rem;
             font-weight: 700;
             flex-wrap: wrap;
         }
@@ -73,73 +75,73 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             background: #FFF;
-            padding: 6px 14px;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 4px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
         .calendar-container {
-            max-width: 900px;
             width: 100%;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
 
         .month-card {
-            background: rgba(255, 255, 255, 0.75);
-            border-radius: 30px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            padding: 10px 6px;
             box-shadow: var(--card-shadow);
-            border: 4px solid #FFF;
+            border: 2px solid #FFF;
         }
 
         .month-title {
             font-family: 'Fredoka One', cursive;
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             text-align: center;
             color: #FF7675;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 0px #FFF;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 0px #FFF;
         }
 
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 2px;
             text-align: center;
             font-weight: 700;
+            font-size: 0.75rem;
             color: #8C7AE6;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .days-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
+            gap: 4px;
         }
 
         .day-cell {
-            aspect-ratio: 1;
+            aspect-ratio: 0.85;
             background: var(--cloud-white);
-            border-radius: 20px;
-            border: 3px solid #E2E8F0;
+            border-radius: 12px;
+            border: 2px solid #E2E8F0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 6px;
+            padding: 3px 2px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            transition: transform 0.15s, background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
 
-        .day-cell:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        .day-cell:active {
+            transform: scale(0.95);
         }
 
         .day-cell.empty {
@@ -167,36 +169,38 @@
 
         .day-num {
             font-family: 'Fredoka One', cursive;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
             align-self: flex-start;
+            margin-left: 2px;
         }
 
         .day-status {
-            font-size: 2.2rem;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-grow: 1;
+            line-height: 1;
         }
 
         .badge-target {
-            font-size: 0.7rem;
+            font-size: 0.55rem;
             font-weight: 700;
             background: #FFD166;
             color: #2D3436;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-top: 2px;
+            padding: 1px 3px;
+            border-radius: 6px;
+            white-space: nowrap;
         }
 
         @keyframes pop {
             0% { transform: scale(0.6); }
-            50% { transform: scale(1.3); }
+            50% { transform: scale(1.25); }
             100% { transform: scale(1); }
         }
 
         .pop {
-            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
     </style>
 </head>
@@ -206,8 +210,8 @@
         <h1>🏆 Mon Calendrier de Grand 🏆</h1>
         <div class="subtitle">En route vers l'objectif sans tétine ! 🚀</div>
         <div class="legend">
-            <div class="legend-item">🎯 Soirée spéciale</div>
-            <div class="legend-item">⭐ Réussi !</div>
+            <div class="legend-item">🌙 Soirée</div>
+            <div class="legend-item">⭐ Réussi</div>
             <div class="legend-item">🌧️ Pas réussi</div>
         </div>
     </header>
@@ -317,7 +321,7 @@
                         saveData();
 
                         statusDiv.classList.add('pop');
-                        setTimeout(() => statusDiv.classList.remove('pop'), 400);
+                        setTimeout(() => statusDiv.classList.remove('pop'), 300);
 
                         applyCellState(cell, statusDiv, nextStatus, isTarget);
 
