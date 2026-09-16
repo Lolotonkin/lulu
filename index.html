@@ -10,7 +10,8 @@
             --bg-sky: linear-gradient(180deg, #EAE5FF 0%, #FFF3E4 60%, #E2F0D9 100%);
             --cloud-white: #FFFFFF;
             --target-night: linear-gradient(135deg, #4A4083 0%, #292452 100%);
-            --star-gold: #FFD166;
+            --success-bg: linear-gradient(135deg, #A8E6CF 0%, #56AB2F 100%);
+            --fail-bg: #E2E8F0;
             --card-shadow: 0 8px 20px rgba(80, 70, 100, 0.12);
         }
 
@@ -33,7 +34,7 @@
 
         header {
             text-align: center;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px 30px;
             border-radius: 25px;
             box-shadow: var(--card-shadow);
@@ -88,7 +89,7 @@
         }
 
         .month-card {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
             border-radius: 30px;
             padding: 20px;
             box-shadow: var(--card-shadow);
@@ -132,7 +133,7 @@
             padding: 6px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
         }
 
@@ -152,6 +153,18 @@
             border-color: #786FA6;
         }
 
+        .day-cell.status-success {
+            background: var(--success-bg) !important;
+            border-color: #56AB2F !important;
+            color: #FFF !important;
+        }
+
+        .day-cell.status-fail {
+            background: var(--fail-bg) !important;
+            border-color: #CBD5E1 !important;
+            color: #64748B !important;
+        }
+
         .day-num {
             font-family: 'Fredoka One', cursive;
             font-size: 1.2rem;
@@ -159,7 +172,7 @@
         }
 
         .day-status {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -177,13 +190,13 @@
         }
 
         @keyframes pop {
-            0% { transform: scale(0.8); }
-            50% { transform: scale(1.2); }
+            0% { transform: scale(0.6); }
+            50% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
 
         .pop {
-            animation: pop 0.3s ease-out;
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
     </style>
 </head>
@@ -193,16 +206,15 @@
         <h1>🏆 Mon Calendrier de Grand 🏆</h1>
         <div class="subtitle">En route vers l'objectif sans tétine ! 🚀</div>
         <div class="legend">
-            <div class="legend-item">🌙 Soirée spéciale</div>
-            <div class="legend-item">🟢 Réussi !</div>
-            <div class="legend-item">🔴 Pas réussi</div>
+            <div class="legend-item">🎯 Soirée spéciale</div>
+            <div class="legend-item">⭐ Réussi !</div>
+            <div class="legend-item">🌧️ Pas réussi</div>
         </div>
     </header>
 
     <div class="calendar-container" id="calendar"></div>
 
     <script>
-        // Dates cibles format YYYY-MM-DD
         const targetDatesList = [
             // Septembre
             "2026-09-16", "2026-09-23", "2026-09-24", "2026-09-30",
@@ -217,7 +229,6 @@
         ];
 
         const TARGET_DATES = new Set(targetDatesList);
-
         let savedData = JSON.parse(localStorage.getItem('tetine_tracker')) || {};
 
         function saveData() {
@@ -227,9 +238,9 @@
         function createCalendar() {
             const container = document.getElementById('calendar');
             const months = [
-                { year: 2026, month: 8, name: "Septembre 2026 🌙" },  // 8 = Septembre dans l'API Date (0-indexed)
-                { year: 2026, month: 9, name: "Octobre 2026 ⭐" },    // 9 = Octobre
-                { year: 2026, month: 10, name: "Novembre 2026 🚀" }   // 10 = Novembre
+                { year: 2026, month: 8, name: "Septembre 2026 🌙" },
+                { year: 2026, month: 9, name: "Octobre 2026 ⭐" },
+                { year: 2026, month: 10, name: "Novembre 2026 🚀" }
             ];
 
             const weekDays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -268,7 +279,6 @@
                 }
 
                 for (let day = 1; day <= lastDay.getDate(); day++) {
-                    // Formatage strict YYYY-MM-DD avec zéro initial obligatoire
                     const monthStr = String(m.month + 1).padStart(2, '0');
                     const dayStr = String(day).padStart(2, '0');
                     const dateStr = `${m.year}-${monthStr}-${dayStr}`;
@@ -277,10 +287,7 @@
                     cell.className = 'day-cell';
 
                     const isTarget = TARGET_DATES.has(dateStr);
-
-                    if (isTarget) {
-                        cell.classList.add('target-night');
-                    }
+                    if (isTarget) cell.classList.add('target-night');
 
                     const num = document.createElement('div');
                     num.className = 'day-num';
@@ -291,7 +298,7 @@
                     statusDiv.className = 'day-status';
 
                     const currentStatus = savedData[dateStr] || 'none';
-                    updateStatusDisplay(statusDiv, currentStatus, isTarget);
+                    applyCellState(cell, statusDiv, currentStatus, isTarget);
                     cell.appendChild(statusDiv);
 
                     if (isTarget && currentStatus === 'none') {
@@ -301,7 +308,6 @@
                         cell.appendChild(badge);
                     }
 
-                    // Clic actif sur TOUS les jours du calendrier
                     cell.addEventListener('click', () => {
                         let nextStatus = 'success';
                         if (savedData[dateStr] === 'success') nextStatus = 'fail';
@@ -311,10 +317,10 @@
                         saveData();
 
                         statusDiv.classList.add('pop');
-                        setTimeout(() => statusDiv.classList.remove('pop'), 300);
+                        setTimeout(() => statusDiv.classList.remove('pop'), 400);
 
-                        updateStatusDisplay(statusDiv, nextStatus, isTarget);
-                        
+                        applyCellState(cell, statusDiv, nextStatus, isTarget);
+
                         const oldBadge = cell.querySelector('.badge-target');
                         if (oldBadge) oldBadge.remove();
                         if (isTarget && nextStatus === 'none') {
@@ -333,15 +339,19 @@
             });
         }
 
-        function updateStatusDisplay(element, status, isTarget) {
+        function applyCellState(cell, statusDiv, status, isTarget) {
+            cell.classList.remove('status-success', 'status-fail');
+
             if (status === 'success') {
-                element.innerText = '🟢';
+                statusDiv.innerText = '⭐';
+                cell.classList.add('status-success');
             } else if (status === 'fail') {
-                element.innerText = '🔴';
+                statusDiv.innerText = '🌧️';
+                cell.classList.add('status-fail');
             } else if (isTarget) {
-                element.innerText = '🌙';
+                statusDiv.innerText = '🌙';
             } else {
-                element.innerText = '☁️';
+                statusDiv.innerText = '☁️';
             }
         }
 
